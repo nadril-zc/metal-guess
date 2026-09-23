@@ -1,0 +1,244 @@
+@use '_reset.scss';
+@import 'https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap';
+
+// Color Declaration
+
+$black: #000;
+$white: #fff;
+
+$primary: #ff0000;
+$background: #0B0B0A;
+
+/* Make fonts look nice */
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	box-sizing: border-box;
+}
+
+// Font Size/Weight Declarations
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+li {
+	font-size: inherit;
+	line-height: inherit;
+	font-weight: inherit;
+}
+
+p,
+.list li {
+	font-size: 18px;
+	color: #EADEDA;
+	line-height: 1.4;
+}
+
+main * + * { margin-top: 20px; }
+
+.flex > * + *,
+.row > * + * { margin-left: 20px; margin-top: 0; }
+
+.flex--reverse > * + *,
+.row--reverse > * + * { margin-left: 0; margin-right: 20px; }
+
+br { margin-top: 0; }
+
+img { vertical-align: middle; }
+
+sup,
+sub { font-size: 50%; line-height: 0; }
+
+ul { list-style-type: none; }
+
+.list { list-style-position: outside; margin-left: 26px; }
+
+ul.list { list-style-type: disc; }
+
+a { text-decoration: none; }
+
+strong { font-weight: 700; }
+
+em { font-style: oblique; }
+
+.heading {
+	color: $primary;
+	font-size: 72px;
+	font-weight: 800;
+	text-transform: uppercase;
+	margin-left: 20px;
+	letter-spacing: 3px;
+
+	@media screen and ( max-width: 560px ) {
+		font-size: 40px;
+		margin-left: 0;
+	}
+}
+
+.subHeading {
+	color: $primary;
+	font-size: 22px;
+	text-transform: uppercase;
+
+	&+* { margin-top: 10px; }
+}
+
+.footnotes {
+	li {
+		font-size: 13px;
+
+		&+* { margin-top: 5px; }
+
+		a {
+			 /* These are technically the same, but use both */
+			overflow-wrap: break-word;
+			word-wrap: break-word;
+
+			-ms-word-break: break-all;
+			/* This is the dangerous one in WebKit, as it breaks things wherever */
+			word-break: break-all;
+			/* Instead use this non-standard one: */
+			word-break: break-word;
+		}
+	}
+}
+
+.hiddenLink {
+	clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+// Generic Reusable Styles
+
+.floatLeft {
+	float: left;
+	margin-top: 25px;
+	margin-right: 20px;
+
+	&.push { margin-left: -80px; }
+
+	+ p { margin-top: 20px; }
+}
+
+.floatRight {
+	float: right;
+	margin-top: 25px;
+	margin-left: 20px;
+
+	&.push { margin-right: -80px; }
+
+	+ p { margin-top: 20px; }
+}
+
+.clear { clear: both; }
+
+.flex {
+	display: flex;
+
+	// Note that these modifiers also work with the .row class
+	&--bot { align-items: flex-end; }
+	&--top { align-items: flex-start; }
+	&--center { align-items: center; }
+	&--right { justify-content: flex-end; }
+	&--mid { justify-content: center; }
+	&--between { justify-content: space-between; }
+	&--reverse { flex-direction: row-reverse; }
+	&--wrap { flex-wrap: wrap; }
+}
+
+.flexCol {
+	display: flex;
+	flex-direction: column;
+
+	// Note that these modifiers also work with the .row class
+	&--bot { justify-content: flex-end; }
+	&--top { justify-content: flex-start; }
+	&--center { justify-content: center; }
+	&--between { justify-content: space-between; }
+	&--left { align-items: flex-start; }
+	&--right { align-items: flex-end; }
+	&--mid { align-items: center; }
+	&--reverse { flex-direction: column-reverse; }
+	&--wrap { flex-wrap: wrap; }
+}
+
+.flexImage { flex-shrink: 0; }
+
+.pushRight { margin-right: -80px; }
+.pushLeft { margin-left: -80px; }
+
+.pushRight2x { margin-right: -160px; }
+.pushLeft2x { margin-left: -160px; }
+
+//Generic Global Styles
+
+// How large is the container?
+$containerSize: 1080px;
+
+.container {
+	position: relative;
+	max-width: $containerSize;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.fullContainer {
+	position: relative;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.row {
+	width: 100%;
+	position: relative;
+	display: flex;
+
+	&--bot { align-items: flex-end; }
+	&--top { align-items: flex-start; }
+	&--center { align-items: center; }
+	&--right { justify-content: flex-end; }
+	&--mid { justify-content: center; }
+	&--between { justify-content: space-between; }
+	&--reverse { flex-direction: row-reverse; }
+	&--wrap { flex-wrap: wrap; }
+}
+
+.rowCol {
+	width: 100%;
+	clear: both;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+
+	&--bot { justify-content: flex-end; }
+	&--top { justify-content: flex-start; }
+	&--center { justify-content: center; }
+	&--between { justify-content: space-between; }
+	&--left { align-items: flex-start; }
+	&--right { align-items: flex-end; }
+	&--mid { align-items: center; }
+	&--reverse { flex-direction: column-reverse; }
+	&--wrap { flex-wrap: wrap; }
+}
+
+body {
+	font-size: 14px;
+	line-height: 1.2;
+	color: $black;
+	font-family: "Ubuntu Mono", monospace;
+	font-weight: 400;
+}
+
+main { width: 100%; overflow: hidden; }
+main:focus { outline: none !important; }
+
+// Main Styles

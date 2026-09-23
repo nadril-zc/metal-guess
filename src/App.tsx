@@ -26,7 +26,7 @@ function useRandomBandShard(): UseRandomBandShardResult {
     const shardIndex = Math.floor(Math.random() * NUM_SHARDS);
     const shardId = String(shardIndex).padStart(2, '0');
 
-    fetch(`/shards/bands_shard_${shardId}.json`, { signal: controller.signal })
+    fetch(`${import.meta.env.BASE_URL}shards/bands_shard_${shardId}.json`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load shard ${shardId}`);
         return res.json() as Promise<Band[]>;

@@ -32,8 +32,8 @@ li {
 
 p,
 .list li {
-	font-size: 18px;
-	color: #EADEDA;
+	font-size: 14px;
+	color: #000;
 	line-height: 1.4;
 }
 
@@ -242,3 +242,22 @@ main { width: 100%; overflow: hidden; }
 main:focus { outline: none !important; }
 
 // Main Styles
+
+.game {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	width: 100%;
+	padding: 20px;
+}
+
+.bandName {
+	font-size: 48px;
+}
+
+.genre {
+	font-size: 24px;
+	color: #000;
+}

@@ -44,11 +44,33 @@ function useRandomBandShard(): UseRandomBandShardResult {
   return { bands, error };
 }
 
+// shuffle function
+function shuffle(array:string[]): string[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    // Pick a random index from 0 to i
+    const j = Math.floor(Math.random() * (i + 1));
+    
+    // Swap elements array[i] and array[j]
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function App() {
   const { bands, error } = useRandomBandShard();
+  const  [currentBand, setCurrentBand]  = useState<Band | null>(null);
+
+  // bands is now an array of ~3,100 bands from one random shard —
+  useEffect(() => {
+    if (bands && bands.length > 0) {
+      const randomBand = bands[Math.floor(Math.random() * bands.length)];
+      setCurrentBand(randomBand);
+    }
+  }, [bands]);
 
   if (error) return <div>Couldn't load bands.</div>;
   if (!bands) return <div>Loading…</div>;
+  if (!currentBand) return <div>Loading…</div>;
   
   const genreCounts: Record<string, number> = {};
 
@@ -60,27 +82,51 @@ function App() {
 
   const sortedGenres: string[] = Object.keys(genreCounts).sort();
 
-  console.log(sortedGenres);
-
-  // bands is now an array of ~3,100 bands from one random shard —
-  const randomBand: Band = bands[Math.floor(Math.random() * bands.length)];
-
   // Loop through all of the genres of a band and add them into one string to display
   let genreString: string = '';
 
-  for(let i = 0; i < randomBand.genres.length; i++ ) {
+  for(let i = 0; i < currentBand.genres.length; i++ ) {
     if ( i == 0 ) {
-      genreString += randomBand.genres[i];
+      genreString += currentBand.genres[i];
     } else {
-      genreString += ' / '+randomBand.genres[i];
+      genreString += ' / '+currentBand.genres[i];
     }
+  }
+
+  // Add correct answer to guess array
+  let guesses: string[] = [currentBand.genres[0]];
+
+  for (let a = 0; a < 3; a++) {
+    guesses.push(sortedGenres[Math.floor(Math.random() * sortedGenres.length)]);
+  }
+
+  shuffle(guesses);
+
+  function handleClick(genre:string) {
+    if (!currentBand) return;
+    if (!bands) return;
+
+    if ( genre == currentBand.genres[0]) {
+      alert('winner!');
+    } else {
+      alert('you lose');
+    }
+
+    const randomBand = bands[Math.floor(Math.random() * bands.length)];
+    setCurrentBand(randomBand);
   }
 
   return (
     <>
       <section className="game">
-        <h1 className="bandName">Band Name: <strong>{randomBand.name}</strong></h1>
+        <h1 className="bandName">Band Name: <strong>{currentBand.name}</strong></h1>
         <p className="genre">Band Genre: <strong>{genreString}</strong></p>
+
+        <div className="answerBoard">
+          {guesses.map((guess) => (
+            <button key={guess} className="answerButton" onClick={() => handleClick(guess)}>{guess}</button>
+          ))}
+        </div>
       </section>
     </>
   )

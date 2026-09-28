@@ -59,6 +59,8 @@ function shuffle(array:string[]): string[] {
 function App() {
   const { bands, error } = useRandomBandShard();
   const  [currentBand, setCurrentBand]  = useState<Band | null>(null);
+  const [isAnswered, setIsAnswered] = useState<boolean>(false);
+  const [isRight, setIsRight] = useState<boolean>(false);
 
   // bands is now an array of ~3,100 bands from one random shard —
   useEffect(() => {
@@ -106,27 +108,39 @@ function App() {
     if (!currentBand) return;
     if (!bands) return;
 
-    if ( genre == currentBand.genres[0]) {
-      alert('winner!');
+    if ( currentBand.genres.includes(genre)) {
+      setIsRight(true);
     } else {
-      alert('you lose');
+      setIsRight(false);
     }
+
+    setIsAnswered(true);
+  }
+
+  function handleNext() {
+    if (!bands) return;
 
     const randomBand = bands[Math.floor(Math.random() * bands.length)];
     setCurrentBand(randomBand);
+    setIsAnswered(false);
   }
 
   return (
     <>
       <section className="game">
         <h1 className="bandName">Band Name: <strong>{currentBand.name}</strong></h1>
-        <p className="genre">Band Genre: <strong>{genreString}</strong></p>
+        <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <strong>{genreString}</strong></p>
+
+        <p className={isAnswered && isRight ? 'active correct' : 'correct'}>Correct!</p>
+        <p className={isAnswered && !isRight ? 'active false' : 'false'}>Wrong!</p>
 
         <div className="answerBoard">
           {guesses.map((guess) => (
             <button key={guess} className="answerButton" onClick={() => handleClick(guess)}>{guess}</button>
           ))}
         </div>
+
+        <button className="next" onClick={handleNext}>NEXT BAND</button>
       </section>
     </>
   )

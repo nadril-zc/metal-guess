@@ -61,6 +61,7 @@ function App() {
   const  [currentBand, setCurrentBand]  = useState<Band | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
+  const [count, setCount] = useState(0);
 
   // bands is now an array of ~3,100 bands from one random shard —
   useEffect(() => {
@@ -110,6 +111,7 @@ function App() {
 
     if ( currentBand.genres.includes(genre)) {
       setIsRight(true);
+      setCount(prevCount => prevCount + 1);
     } else {
       setIsRight(false);
     }
@@ -129,6 +131,7 @@ function App() {
     <>
       <section className="game">
         <h1 className="bandName">Band Name: <strong>{currentBand.name}</strong></h1>
+        <span className="count">Correct Guesses: <strong>{count}</strong></span>
         <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <strong>{genreString}</strong></p>
 
         <p className={isAnswered && isRight ? 'active correct' : 'correct'}>Correct!</p>

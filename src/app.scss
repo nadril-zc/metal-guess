@@ -305,3 +305,11 @@ main:focus { outline: none !important; }
 
 .correct { color: #32a852; }
 .false { color: #a83232; }
+
+.count {
+	position: absolute;
+	color: #000;
+	font-size: 14px;
+	top: 20px;
+	right: 20px;
+}

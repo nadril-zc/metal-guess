@@ -58,10 +58,11 @@ function shuffle(array:string[]): string[] {
 
 function App() {
   const { bands, error } = useRandomBandShard();
-  const  [currentBand, setCurrentBand]  = useState<Band | null>(null);
+  const [currentBand, setCurrentBand]  = useState<Band | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
   const [count, setCount] = useState(0);
+  const [life, setLife] = useState(100);
 
   // bands is now an array of ~3,100 bands from one random shard —
   useEffect(() => {
@@ -108,12 +109,15 @@ function App() {
   function handleClick(genre:string) {
     if (!currentBand) return;
     if (!bands) return;
+    if (isAnswered) return;
 
     if ( currentBand.genres.includes(genre)) {
       setIsRight(true);
       setCount(prevCount => prevCount + 1);
     } else {
       setIsRight(false);
+
+       setLife(prevLife => prevLife - 10);
     }
 
     setIsAnswered(true);
@@ -127,11 +131,26 @@ function App() {
     setIsAnswered(false);
   }
 
+  function handleRestart() {
+    if (!bands) return;
+
+    const randomBand = bands[Math.floor(Math.random() * bands.length)];
+    setCurrentBand(randomBand);
+    setIsAnswered(false);
+    setLife(100);
+  }
+
   return (
     <>
+      <header className="scores">
+        <span className="count">🎯: <strong>{count}</strong></span> 
+        <div className="life">
+          <span>{life} / 100</span>
+          <div className="life__bar" style={{ width: `${Math.max(0, Math.min(100, life))}%` }}></div>
+          </div>
+        </header>
       <section className="game">
         <h1 className="bandName">Band Name: <strong>{currentBand.name}</strong></h1>
-        <span className="count">Correct Guesses: <strong>{count}</strong></span>
         <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <strong>{genreString}</strong></p>
 
         <p className={isAnswered && isRight ? 'active correct' : 'correct'}>Correct!</p>
@@ -143,7 +162,11 @@ function App() {
           ))}
         </div>
 
-        <button className="next" onClick={handleNext}>NEXT BAND</button>
+        {life === 0 ? (
+          <button className="reset" onClick={handleRestart}>Play Again</button>
+        ) : (
+          <button className="next" onClick={handleNext}>NEXT BAND</button>
+        )}
       </section>
     </>
   )

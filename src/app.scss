@@ -251,10 +251,26 @@ main:focus { outline: none !important; }
 	height: 100vh;
 	width: 100%;
 	padding: 20px;
+	background-color: #E5DADA;
+	margin-top: 0;
+	text-align: center;
+}
+
+.bandBreak { 
+	display: none; 
+
+	@media screen and ( max-width: 767px ) {
+		display: block;
+	}
 }
 
 .bandName {
 	font-size: 48px;
+	color: #000;
+
+	@media screen and ( max-width: 767px ) {
+		font-size: 32px;
+	}
 }
 
 .genre {
@@ -263,6 +279,10 @@ main:focus { outline: none !important; }
 	opacity: 0;
 
 	&.active { opacity: 1; }
+
+	@media screen and ( max-width: 767px ) {
+		font-size: 18px;
+	}
 }
 
 .answerButton {
@@ -288,9 +308,9 @@ main:focus { outline: none !important; }
 .reset {
 	margin-top: 40px;
 	font-size: 18px;
-	background-color: #ff0000;
+	background-color: #002642;
 	padding: 10px 20px;
-	color: #000;
+	color: #fff;
 	border-radius: 5px;
 	font-weight: 800;
 	text-transform: uppercase;
@@ -301,6 +321,12 @@ main:focus { outline: none !important; }
 	opacity: 0;
 	font-size: 24px;
 	font-weight: 800;
+	margin-top: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	text-align: center;
 
 	&.active { opacity: 1; }
 }
@@ -308,10 +334,16 @@ main:focus { outline: none !important; }
 .correct { color: #32a852; }
 .false { color: #a83232; }
 
+.answerWrap {
+	position: relative;
+	height: 35px;
+	width: 100%;
+}
+
 .scores {
 	width: 100%;
 	height: 40px;
-	background-color: #000;
+	background-color: #02040F;
 	position: fixed;
 	top: 0;
 	left: 0;

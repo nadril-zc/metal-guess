@@ -150,11 +150,13 @@ function App() {
           </div>
         </header>
       <section className="game">
-        <h1 className="bandName">Band Name: <strong>{currentBand.name}</strong></h1>
-        <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <strong>{genreString}</strong></p>
+        <h1 className="bandName">Band Name: <br className="bandBreak" /><strong>{currentBand.name}</strong></h1>
+        <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <br className="bandBreak" /><strong>{genreString}</strong></p>
 
-        <p className={isAnswered && isRight ? 'active correct' : 'correct'}>Correct!</p>
-        <p className={isAnswered && !isRight ? 'active false' : 'false'}>Wrong!</p>
+        <div className="answerWrap">
+          <p className={isAnswered && isRight ? 'active correct' : 'correct'}>Correct!</p>
+          <p className={isAnswered && !isRight ? 'active false' : 'false'}>Wrong!</p>
+        </div>
 
         <div className="answerBoard">
           {guesses.map((guess) => (

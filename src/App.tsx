@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import './App.css'
 
 interface Band {
@@ -45,15 +45,13 @@ function useRandomBandShard(): UseRandomBandShardResult {
 }
 
 // shuffle function
-function shuffle(array:string[]): string[] {
-  for (let i = array.length - 1; i > 0; i--) {
-    // Pick a random index from 0 to i
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    
-    // Swap elements array[i] and array[j]
-    [array[i], array[j]] = [array[j], array[i]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return array;
+  return a;
 }
 
 function App() {
@@ -97,14 +95,18 @@ function App() {
     }
   }
 
-  // Add correct answer to guess array
-  let guesses: string[] = [currentBand.genres[0]];
+  // create board of 4 guesses
+  const guesses = useMemo<string[]>(() => {
+    if (!currentBand) return [];
 
-  for (let a = 0; a < 3; a++) {
-    guesses.push(sortedGenres[Math.floor(Math.random() * sortedGenres.length)]);
-  }
+    const correct = currentBand.genres[0];
+    const distractors = shuffle(
+      sortedGenres.filter((g) => !currentBand.genres.includes(g))
+    ).slice(0, 3);
 
-  shuffle(guesses);
+    return shuffle([correct, ...distractors]);
+  }, [currentBand, sortedGenres]);
+
 
   function handleClick(genre:string) {
     if (!currentBand) return;
@@ -150,7 +152,7 @@ function App() {
           </div>
         </header>
       <section className="game">
-        <h1 className="bandName">Band Name: <br className="bandBreak" /><strong>{currentBand.name}</strong></h1>
+        <h1 className="bandName"><span className="small">Band:</span> <strong>{currentBand.name}</strong></h1>
         <p className={isAnswered ? 'active genre' : 'genre'}>Band Genre: <br className="bandBreak" /><strong>{genreString}</strong></p>
 
         <div className="answerWrap">
@@ -164,11 +166,14 @@ function App() {
           ))}
         </div>
 
-        {life === 0 ? (
-          <button className="reset" onClick={handleRestart}>Play Again</button>
-        ) : (
-          <button className="next" onClick={handleNext}>NEXT BAND</button>
-        )}
+        <div className="nextButtons">
+          {life === 0 && (
+            <button className="reset" onClick={handleRestart}>Play Again</button>
+          )}
+          {life > 0 && isAnswered && (
+            <button className="next" onClick={handleNext}>NEXT BAND</button>
+          )}
+        </div>
       </section>
     </>
   )

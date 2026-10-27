@@ -168,7 +168,7 @@ function Game({ onGameOver }: { onGameOver: (score: number) => void }) {
 function Intro({ onPlay }: { onPlay: () => void }) {
   return (
     <section className="intro">
-      <h1>Genrecide</h1>
+      <h1 className="introHeading">Genrecide</h1>
       <p>The rules are simple. Correctly guess the metal band's sub-genre or take damage. 10 hits and you're out. Think you can handle it?</p>
 
       <button onClick={onPlay}>Start Game</button>
@@ -184,7 +184,7 @@ interface GameOverProps {
 function GameOver({ score, onPlayAgain }: GameOverProps) {
   return (
     <section className="gameOver">
-      <h1>Game Over</h1>
+      <h1 className="introHeading">Game Over</h1>
       <p>You correctly guessed <strong>{score}</strong> {score === 1 ? 'band' : 'bands'}.</p>
       <button onClick={onPlayAgain}>Play Again</button>
     </section>

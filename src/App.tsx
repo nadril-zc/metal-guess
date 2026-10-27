@@ -54,7 +54,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function App() {
+function Game({ onGameOver }: { onGameOver: (score: number) => void }) {
   const { bands, error } = useRandomBandShard();
   const [currentBand, setCurrentBand]  = useState<Band | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
@@ -70,19 +70,27 @@ function App() {
     }
   }, [bands]);
 
+  const sortedGenres = useMemo<string[]>(() => {
+    if (!bands) return [];
+    const set = new Set<string>();
+    for (const band of bands) {
+      for (const genre of band.genres) set.add(genre);
+    }
+    return Array.from(set).sort();
+  }, [bands]);
+
+  const guesses = useMemo<string[]>(() => {
+    if (!currentBand) return [];
+    const correct = currentBand.genres[0];
+    const distractors = shuffle(
+      sortedGenres.filter((g) => !currentBand.genres.includes(g))
+    ).slice(0, 3);
+    return shuffle([correct, ...distractors]);
+  }, [currentBand, sortedGenres]);
+
   if (error) return <div>Couldn't load bands.</div>;
   if (!bands) return <div>Loading…</div>;
   if (!currentBand) return <div>Loading…</div>;
-  
-  const genreCounts: Record<string, number> = {};
-
-  for (const band of bands) {
-    for (const genre of band.genres) {
-      genreCounts[genre] = (genreCounts[genre] ?? 0) + 1;
-    }
-  }
-
-  const sortedGenres: string[] = Object.keys(genreCounts).sort();
 
   // Loop through all of the genres of a band and add them into one string to display
   let genreString: string = '';
@@ -94,19 +102,6 @@ function App() {
       genreString += ' / '+currentBand.genres[i];
     }
   }
-
-  // create board of 4 guesses
-  const guesses = useMemo<string[]>(() => {
-    if (!currentBand) return [];
-
-    const correct = currentBand.genres[0];
-    const distractors = shuffle(
-      sortedGenres.filter((g) => !currentBand.genres.includes(g))
-    ).slice(0, 3);
-
-    return shuffle([correct, ...distractors]);
-  }, [currentBand, sortedGenres]);
-
 
   function handleClick(genre:string) {
     if (!currentBand) return;
@@ -133,19 +128,10 @@ function App() {
     setIsAnswered(false);
   }
 
-  function handleRestart() {
-    if (!bands) return;
-
-    const randomBand = bands[Math.floor(Math.random() * bands.length)];
-    setCurrentBand(randomBand);
-    setIsAnswered(false);
-    setLife(100);
-  }
-
   return (
     <>
       <header className="scores">
-        <span className="count">🎯: <strong>{count}</strong></span> 
+        <span className="count">🔪: <strong>{count}</strong></span> 
         <div className="life">
           <span>{life} / 100</span>
           <div className="life__bar" style={{ width: `${Math.max(0, Math.min(100, life))}%` }}></div>
@@ -168,7 +154,7 @@ function App() {
 
         <div className="nextButtons">
           {life === 0 && (
-            <button className="reset" onClick={handleRestart}>Play Again</button>
+             <button className="reset" onClick={() => onGameOver(count)}>See Results</button>
           )}
           {life > 0 && isAnswered && (
             <button className="next" onClick={handleNext}>NEXT BAND</button>
@@ -177,6 +163,54 @@ function App() {
       </section>
     </>
   )
+}
+
+function Intro({ onPlay }: { onPlay: () => void }) {
+  return (
+    <section className="intro">
+      <h1>Genrecide</h1>
+      <p>The rules are simple. Correctly guess the metal band's sub-genre or take damage. 10 hits and you're out. Think you can handle it?</p>
+
+      <button onClick={onPlay}>Start Game</button>
+    </section>
+  )
+}
+
+interface GameOverProps {
+  score: number;
+  onPlayAgain: () => void;
+}
+
+function GameOver({ score, onPlayAgain }: GameOverProps) {
+  return (
+    <section className="gameOver">
+      <h1>Game Over</h1>
+      <p>You correctly guessed <strong>{score}</strong> {score === 1 ? 'band' : 'bands'}.</p>
+      <button onClick={onPlayAgain}>Play Again</button>
+    </section>
+  );
+}
+
+type Screen = 'intro' | 'playing' | 'gameover';
+
+function App() {
+  const [screen, setScreen] = useState<Screen>('intro');
+  const [finalScore, setFinalScore] = useState<number>(0);
+
+  function handleGameOver(score: number) {
+    setFinalScore(score);
+    setScreen('gameover');
+  }
+
+  return (
+    <>
+      {screen === 'intro' && <Intro onPlay={() => setScreen('playing')} />}
+      {screen === 'playing' && <Game onGameOver={handleGameOver} />}
+      {screen === 'gameover' && (
+        <GameOver score={finalScore} onPlayAgain={() => setScreen('playing')} />
+      )}
+    </>
+  );
 }
 
 export default App
